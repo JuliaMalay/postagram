@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
+import PostFilter from './components/PostFilter';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
-import Select from './components/UI/select/Select';
-
+import Button from './components/UI/button/Button';
+import Modal from './components/UI/modal/Modal';
 import './styles/App.css';
+
 function App() {
   const [posts, setPosts] = useState([
     {
@@ -22,38 +24,56 @@ function App() {
       body: 'Каскадные таблицы стилей',
     },
   ]);
-  const [selectedSort, setSelectedSort] = useState('');
+  const [filter, setFilter] = useState({sort: '', query: ''});
+  const [modal, setModal] = useState(false);
+
+  // useMemo первый аргумент - результат вычичслений, второй - массив зависимостей
+  const sortedPosts = useMemo(() => {
+    console.log('done');
+
+    if (filter.sort) {
+      return [...posts].sort((a, b) =>
+        a[filter.sort].localeCompare(b[filter.sort])
+      );
+    } else {
+      return posts;
+    }
+  }, [filter.sort, posts]);
+
+  const sortedAndSearchedPosts = useMemo(() => {
+    return sortedPosts.filter((post) =>
+      post.title.toLowerCase().includes(filter.query)
+    );
+  }, [filter.query, sortedPosts]);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
+    setModal(false);
   };
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
-  const sortPosts = (sort) => {
-    setSelectedSort(sort);
-    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
-  };
+
   return (
     <div className="App">
-      <PostForm create={createPost} />
+      <Button
+        onClick={() => {
+          setModal(true);
+        }}
+      >
+        Создать новый пост
+      </Button>
+      <Modal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost} />
+      </Modal>
       <hr style={{margin: '10px 0'}} />
-      <div>
-        <Select
-          value={selectedSort}
-          onChange={sortPosts}
-          defaultValue="Сортировка"
-          options={[
-            {value: 'title', name: 'По названию'},
-            {value: 'body', name: 'По описанию'},
-          ]}
-        />
-      </div>
-      {posts.length !== 0 ? (
-        <PostList posts={posts} title="Список постов" remove={removePost} />
-      ) : (
-        <h2 style={{textAlign: 'center'}}>Посты не найдены!</h2>
-      )}
+      <PostFilter filter={filter} setFilter={setFilter} />
+
+      <PostList
+        posts={sortedAndSearchedPosts}
+        title="Список постов"
+        remove={removePost}
+      />
     </div>
   );
 }
