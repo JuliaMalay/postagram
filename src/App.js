@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {usePosts} from './components/hooks/usePosts';
 import PostFilter from './components/PostFilter';
 import PostForm from './components/PostForm';
@@ -6,39 +6,37 @@ import PostList from './components/PostList';
 import Button from './components/UI/button/Button';
 import Modal from './components/UI/modal/Modal';
 import './styles/App.css';
+const axios = require('axios');
 
 function App() {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: 'JavaScript',
-      body: 'Мультипарадигменный язык программирования',
-    },
-    {
-      id: 2,
-      title: 'HTML',
-      body: 'Язык гипертекстовой разметки',
-    },
-    {
-      id: 3,
-      title: 'CSS',
-      body: 'Каскадные таблицы стилей',
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({sort: '', query: ''});
   const [modal, setModal] = useState(false);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
     setModal(false);
   };
+
+  async function fetchPosts() {
+    const response = await axios.get(
+      'https://jsonplaceholder.typicode.com/posts'
+    );
+    setPosts(response.data);
+  }
+
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
   return (
     <div className="App">
+      <Button onClick={fetchPosts}>Get data</Button>
       <Button
         onClick={() => {
           setModal(true);
