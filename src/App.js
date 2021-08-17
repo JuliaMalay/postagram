@@ -27,17 +27,14 @@ function App() {
   const [filter, setFilter] = useState({sort: '', query: ''});
   const [modal, setModal] = useState(false);
 
-  // useMemo первый аргумент - результат вычичслений, второй - массив зависимостей
+  // useMemo первый аргумент - результат вычислений, второй - массив зависимостей
   const sortedPosts = useMemo(() => {
-    console.log('done');
-
     if (filter.sort) {
       return [...posts].sort((a, b) =>
         a[filter.sort].localeCompare(b[filter.sort])
       );
-    } else {
-      return posts;
     }
+    return posts;
   }, [filter.sort, posts]);
 
   const sortedAndSearchedPosts = useMemo(() => {
