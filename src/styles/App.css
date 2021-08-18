@@ -5,7 +5,8 @@
 }
 #root {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 .App {
   width: 800px;
@@ -35,13 +36,35 @@
 .page__wrapper {
   margin-top: 30px;
   display: flex;
+  justify-content: center;
 }
 .page {
   padding: 10px;
   border: 1px solid teal;
   cursor: pointer;
+  margin: 5px;
 }
 .page__current {
   border: 2px solid orange;
   font-weight: bold;
+}
+.navbar {
+  height: 50px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  border-bottom: 1px solid teal;
+  margin-bottom: 10px;
+}
+.navbar__links {
+  width: 150px;
+  margin-left: auto;
+  display: flex;
+  justify-content: space-around;
+}
+.navbar__link {
+  text-decoration: none;
+  font-weight: bold;
+  color: teal;
 }
