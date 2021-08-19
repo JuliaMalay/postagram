@@ -33,19 +33,23 @@
   transform: translateX(-350px);
   transition: all 500ms ease-in;
 }
+
+.post__btns {
+  display: flex;
+}
 .page__wrapper {
   margin-top: 30px;
   display: flex;
   justify-content: center;
 }
 .page {
-  padding: 10px;
+  padding: 5px 10px;
   border: 1px solid teal;
   cursor: pointer;
   margin: 5px;
 }
 .page__current {
-  border: 2px solid orange;
+  border: 2px solid rgb(233, 112, 56);
   font-weight: bold;
 }
 .navbar {
